@@ -31,6 +31,5 @@ This project analyzes coffee shop sales data using PostgreSQL and Power BI to ge
 
 ## Files Included
 - Power BI Dashboard (.pbix)
-- SQL Queries (.sql)
-- Dataset (.csv)
+- SQL Queries (.sql) 
 - Dashboard Screenshots
