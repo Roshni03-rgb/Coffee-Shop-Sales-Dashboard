@@ -1,0 +1,106 @@
+--Create Table.
+Create table Coffee_Shop(
+		Transaction_id	Int	Primary key, 
+		Transaction_date	Date	Not null,
+		Transaction_time	Time	Not null,
+		Transaction_qty	Int	Not null,
+		Store_id	Int,
+		Store_location	Varchar(20),	
+		Product_id	Int, 
+		Unit_price	Numeric(10,2)	Not null,
+		Product_category	Varchar(50)	Not null,
+		Product_type	Varchar(100),	
+		Product_detail	Varchar(100)	
+		);
+
+--Retrieve all data from the table coffee_shop.  
+Select *from Coffee_Shop;
+
+--Remove null. 
+Delete from coffee_shop 
+where unit_price is null;
+
+
+--Fix format 
+Alter table coffee_shop
+alter column transaction_date type date; 
+
+
+--Total sales
+Select Sum(unit_price * transaction_qty) as Total_Sales 
+from coffee_shop; 
+
+
+--Total sales by each month. 
+SELECT 
+    DATE_TRUNC('month', Transaction_date) AS month,
+    SUM(unit_price * transaction_qty) AS total_sales
+FROM coffee_shop
+GROUP BY DATE_TRUNC('month', Transaction_date)
+ORDER BY month;
+
+
+--Average sales.
+select avg(unit_price*transaction_qty) as avg_sales
+from coffee_shop;
+
+
+--Total Quantity.
+select sum(transaction_qty) as total_quantity
+from coffee_shop;
+
+
+--Total Transaction.
+select count(transaction_id) as Total_transaction
+from coffee_shop; 
+
+
+--List of unique product types. 
+select distinct product_type
+from coffee_shop; 
+
+
+--Retrieve unique product category. 
+select distinct product_category
+from coffee_shop;
+
+
+--Retrieve unique store locations. 
+select distinct store_location from coffee_shop;
+
+
+--Retrieving total sales by unique store location. 
+select store_location, Sum(unit_price * transaction_qty) as Total_Sales 
+from coffee_shop
+group by store_location; 
+
+
+--Assign a Ranking to each product. 
+SELECT distinct product_type, product_category, unit_price,
+dense_rank () over (partition by product_category order by unit_price desc) as Ranking 
+from coffee_shop;
+
+
+-- Condition function for category_group.
+SELECT product_category,
+CASE
+WHEN product_category IN ('Coffee', 'Espresso', 'Tea') THEN 'Beverages'
+WHEN product_category IN ('Cake', 'Pastry', 'Cookie', 'Bakery') THEN 'Bakery'
+ELSE 'Other' END AS category_group
+FROM coffee_shop;
+
+
+--Condition function for Price_categrory. 
+SELECT product_category, unit_price, unit_price * transaction_qty as Sales,
+CASE
+WHEN unit_price < 12.00 THEN 'Budget'
+WHEN unit_price BETWEEN 12.00 AND 20.00 THEN 'Medium'
+ELSE 'Premium'
+END AS price_category
+FROM coffee_shop
+where unit_price> 12;
+
+ --Retrieve where unit_price and sales are more than 12. 
+select unit_price, transaction_qty ,  unit_price * transaction_qty as Sales 
+from coffee_shop
+where unit_price> 12;
